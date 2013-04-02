@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "name": "speedtest",
+  "version": "0.0.0",
+  "description": "Test server network speed through http",
+  "dependencies": {
+    "q": "~0.9.2",
+    "underscore": "~1.4.4"
+  }
+}
