@@ -15,6 +15,16 @@ program
 	.option('-h, --host', 'Display hostname along with RTT')
 	.parse(process.argv);
 
+if (typeof program.parallel === 'string') {
+	program.parallel = +program.parallel;
+}
+if (typeof program.repeat === 'string') {
+	program.repeat = +program.repeat;
+}
+if (typeof program.timeout === 'string') {
+	program.timeout = +program.timeout;
+}
+
 var urls = program.args;
 if (!urls.length) {
 	urls = readStdin();
