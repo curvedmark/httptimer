@@ -5,6 +5,7 @@
   "description": "Test server network speed through http",
   "dependencies": {
     "q": "~0.9.2",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "should": "~1.2.2"
   }
 }
