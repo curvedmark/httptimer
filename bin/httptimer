@@ -11,10 +11,15 @@ program
 	.option('-p, --parallel <count>', 'Number of urls to test in parallel')
 	.option('-r, --repeat <times>', 'Number of times to test repeatly')
 	.option('-t, --timeout <ms>', 'Timeout for http request')
+	.option('-h, --host', 'Display hostname along with RTT')
 	.parse(process.argv);
 
 httptimer.start(program.args, program).then(function (rtts) {
-	rtts.forEach(function (rtt) {
-		console.log(rtt);
+	rtts.forEach(function (rtt, i) {
+		if (program.host) {
+			console.log(program.args[i] + '	' + rtt);
+		} else {
+			console.log(rtt);
+		}
 	});
 });
