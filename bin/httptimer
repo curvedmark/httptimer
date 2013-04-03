@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+'use strict';
+
+var program = require('commander');
+var httptimer = require('../lib/httptimer');
+var version = require('../package.json').version;
+
+program
+	.version(version, '-v, --version')
+	.usage('[options] [urls ...]')
+	.option('-p, --parallel <count>', 'Number of urls to test in parallel')
+	.option('-r, --repeat <times>', 'Number of times to test repeatly')
+	.option('-t, --timeout <ms>', 'Timeout for http request')
+	.parse(process.argv);
+
+httptimer.start(program.args, program).then(function (rtts) {
+	rtts.forEach(function (rtt) {
+		console.log(rtt);
+	});
+});
