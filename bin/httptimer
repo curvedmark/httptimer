@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+var Q = require('q');
 var program = require('commander');
 var httptimer = require('../lib/httptimer');
 var version = require('../package.json').version;
@@ -14,12 +15,37 @@ program
 	.option('-h, --host', 'Display hostname along with RTT')
 	.parse(process.argv);
 
-httptimer.start(program.args, program).then(function (rtts) {
-	rtts.forEach(function (rtt, i) {
-		if (program.host) {
-			console.log(program.args[i] + '	' + rtt);
-		} else {
-			console.log(rtt);
-		}
+var urls = program.args;
+if (!urls.length) {
+	urls = readStdin();
+}
+
+Q(urls).then(function (urls) {
+	httptimer.start(urls, program).then(function (rtts) {
+		rtts.forEach(function (rtt, i) {
+			var output = rtt;
+			if (program.host) {
+				output = urls[i] + '	' + output;
+			}
+
+			console.log(output);
+		});
 	});
 });
+
+function readStdin() {
+	var deferred = Q.defer();
+
+	var stdin = '';
+	process.stdin.resume();
+	process.stdin.setEncoding('utf8');
+	process.stdin.on('data', function (chunk) {
+		stdin += chunk;
+	});
+	process.stdin.on('end', function () {
+		var lines = stdin.trim().split('\n');
+		deferred.resolve(lines);
+	});
+
+	return deferred.promise;
+}
