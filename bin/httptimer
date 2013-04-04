@@ -12,7 +12,8 @@ program
 	.option('-p, --parallel <count>', 'Number of urls to test in parallel')
 	.option('-r, --repeat <times>', 'Number of times to test repeatly')
 	.option('-t, --timeout <ms>', 'Timeout for http request')
-	.option('-h, --host', 'Display hostname along with RTT')
+	.option('-n, --hostname', 'Display hostname along with RTT')
+	.option('-a, --appendix <path>', 'Append path to urls')
 	.parse(process.argv);
 
 if (typeof program.parallel === 'string') {
@@ -31,11 +32,15 @@ if (!urls.length) {
 }
 
 Q(urls).then(function (urls) {
+	var maxLength = urls.reduce(function (maxLength, url) {
+		return Math.max(maxLength, url.length);
+	}, 0);
 	httptimer.start(urls, program).then(function (rtts) {
 		rtts.forEach(function (rtt, i) {
 			var output = rtt;
-			if (program.host) {
-				output = urls[i] + '	' + output;
+			if (program.hostname) {
+				var url = urls[i];
+				output = url + padding(url, maxLength) + output;
 			}
 
 			console.log(output);
@@ -58,4 +63,8 @@ function readStdin() {
 	});
 
 	return deferred.promise;
+}
+
+function padding(url, maxLength) {
+	return new Array(maxLength - url.length + 1).join(' ') + '  ';
 }
