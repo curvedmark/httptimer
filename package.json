@@ -2,7 +2,7 @@
   "name": "httptimer",
   "version": "0.1.0",
   "description": "Test server network RTT via http",
-  "main": "httptimer.js",
+  "main": "lib/httptimer.js",
   "bin": "bin/httptimer",
   "dependencies": {
     "q": "~0.9.2",
