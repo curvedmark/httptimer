@@ -42,7 +42,7 @@ test('startAll, parallel', function (done) {
 	}).nodeify(done);
 });
 
-test.only('start, repeat twice, serial', function (done) {
+test('start, repeat twice, serial', function (done) {
 	var promise = createServers([300, 100], [150, 50]).then(function (urls) {
 		return httptimer.start(urls, {parallel: 1, repeat: 2});
 	});
@@ -55,7 +55,7 @@ test.only('start, repeat twice, serial', function (done) {
 	}).nodeify(done);
 });
 
-test.only('start, repeat twice, parallel', function (done) {
+test('start, repeat twice, parallel', function (done) {
 	var promise = createServers([300, 100], [150, 50]).then(function (urls) {
 		return httptimer.start(urls, {parallel: 2, repeat: 2});
 	});

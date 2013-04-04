@@ -12,7 +12,6 @@ program
 	.option('-p, --parallel <count>', 'Number of urls to test in parallel')
 	.option('-r, --repeat <times>', 'Number of times to test repeatly')
 	.option('-t, --timeout <ms>', 'Timeout for http request')
-	.option('-n, --hostname', 'Display hostname along with RTT')
 	.option('-a, --appendix <path>', 'Append path to urls')
 	.parse(process.argv);
 
@@ -36,12 +35,14 @@ Q(urls).then(function (urls) {
 		return Math.max(maxLength, url.length);
 	}, 0);
 	httptimer.start(urls, program).then(function (rtts) {
-		rtts.forEach(function (rtt, i) {
-			var output = rtt;
-			if (program.hostname) {
-				var url = urls[i];
-				output = url + padding(url, maxLength) + output;
-			}
+		rtts.map(function (rtt, i) {
+			return [urls[i], rtt];
+		}).sort(function (entry1, entry2) {
+			return entry1[1] > entry2[1];
+		}).map(function (entry) {
+			var url = entry[0];
+			var rtt = entry[1];
+			var output = url + padding(url, maxLength) + rtt;
 
 			console.log(output);
 		});
