@@ -4,7 +4,7 @@ var http = require('http');
 var Q = require('q');
 var httptimer = require('../lib/httptimer');
 
-test('startOne', function (done) {
+test('startOne()', function (done) {
 	var promise = createServer(100).then(function (url) {
 		return httptimer.startOne(url);
 	});
@@ -16,7 +16,19 @@ test('startOne', function (done) {
 	}).nodeify(done);
 });
 
-test('startAll, serial', function (done) {
+test('startOne(), timeout', function (done) {
+	var promise = createServer(100).then(function (url) {
+		return httptimer.startOne(url, {timeout: 50});
+	});
+
+	var start = Date.now();
+	promise.catch(function (error) {
+		error.should.be.an.instanceOf(Error);
+		(Date.now() - start).should.be.within(50, 65);
+	}).nodeify(done);
+});
+
+test('startAll(), serial', function (done) {
 	var promise = createServers(200, 100).then(function (urls) {
 		return httptimer.startAll(urls, {parallel: 1});
 	});
@@ -29,7 +41,7 @@ test('startAll, serial', function (done) {
 	}).nodeify(done);
 });
 
-test('startAll, parallel', function (done) {
+test('startAll(), parallel', function (done) {
 	var promise = createServers(200, 100).then(function (urls) {
 		return httptimer.startAll(urls, {parallel: 2});
 	});
@@ -42,9 +54,9 @@ test('startAll, parallel', function (done) {
 	}).nodeify(done);
 });
 
-test('start, repeat twice, serial', function (done) {
+test('repeat(), repeat twice, serial', function (done) {
 	var promise = createServers([300, 100], [150, 50]).then(function (urls) {
-		return httptimer.start(urls, {parallel: 1, repeat: 2});
+		return httptimer.repeat(urls, {parallel: 1, repeat: 2});
 	});
 
 	var start = Date.now();
@@ -55,9 +67,9 @@ test('start, repeat twice, serial', function (done) {
 	}).nodeify(done);
 });
 
-test('start, repeat twice, parallel', function (done) {
+test('repeat(), repeat twice, parallel', function (done) {
 	var promise = createServers([300, 100], [150, 50]).then(function (urls) {
-		return httptimer.start(urls, {parallel: 2, repeat: 2});
+		return httptimer.repeat(urls, {parallel: 2, repeat: 2});
 	});
 
 	var start = Date.now();
@@ -65,6 +77,42 @@ test('start, repeat twice, parallel', function (done) {
 		rtt1.should.be.within(200, 215);
 		rtt2.should.be.within(100, 115);
 		(Date.now() - start).should.be.within(400, 430);
+	}).nodeify(done);
+});
+
+test('start(), sort results', function (done) {
+	var promise = createServers(200, 100).then(function (urls) {
+		var done = httptimer.start(urls, {repeat: 1});
+		return done.then(function (entries) {
+			entries.forEach(function (entry) {
+				entry.url = urls.indexOf(entry.url);
+			});
+			return entries;
+		});
+	});
+
+	promise.spread(function (entry1, entry2) {
+		entry1.url.should.equal(1);
+		entry2.url.should.equal(0);
+	}).nodeify(done);
+});
+
+test('start(), sort results with error', function (done) {
+	var promise = createServers(200, 150, 100, 50).then(function (urls) {
+		var done = httptimer.start(urls, {repeat: 1, timeout: 125});
+		return done.then(function (entries) {
+			entries.forEach(function (entry) {
+				entry.url = urls.indexOf(entry.url);
+			});
+			return entries;
+		});
+	});
+
+	promise.spread(function (entry1, entry2, entry3, entry4) {
+		entry1.url.should.equal(3);
+		entry2.url.should.equal(2);
+		entry3.url.should.equal(0);
+		entry4.url.should.equal(1);
 	}).nodeify(done);
 });
 

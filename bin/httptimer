@@ -31,22 +31,25 @@ if (!urls.length) {
 }
 
 Q(urls).then(function (urls) {
-	var maxLength = urls.reduce(function (maxLength, url) {
-		return Math.max(maxLength, url.length);
-	}, 0);
-	httptimer.start(urls, program).then(function (rtts) {
-		rtts.map(function (rtt, i) {
-			return [urls[i], rtt];
-		}).sort(function (entry1, entry2) {
-			return entry1[1] - entry2[1];
-		}).forEach(function (entry) {
-			var url = entry[0];
-			var rtt = entry[1];
-			var output = url + padding(url, maxLength) + rtt;
-
-			console.log(output);
-		});
+	httptimer.start(urls, program).then(function (entries) {
+		entries.forEach(output);
 	});
+
+	function output(entry) {
+		var output = entry.url + padding(entry.url) + entry.result;
+		console.log(output);
+	}
+
+	var maxLength;
+	function padding(url) {
+		if (maxLength == null) {
+			maxLength = urls.reduce(function (maxLength, url) {
+				return Math.max(maxLength, url.length);
+			}, 0);
+		}
+
+		return new Array(maxLength - url.length + 1).join(' ') + '  ';
+	}
 });
 
 function readStdin() {
@@ -64,8 +67,4 @@ function readStdin() {
 	});
 
 	return deferred.promise;
-}
-
-function padding(url, maxLength) {
-	return new Array(maxLength - url.length + 1).join(' ') + '  ';
 }
