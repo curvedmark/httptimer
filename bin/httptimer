@@ -9,21 +9,11 @@ var version = require('../package.json').version;
 program
 	.version(version, '-v, --version')
 	.usage('[options] [urls ...]')
-	.option('-p, --parallel <count>', 'Number of urls to test in parallel')
-	.option('-r, --repeat <times>', 'Number of times to test repeatly')
-	.option('-t, --timeout <ms>', 'Timeout for http request')
-	.option('-a, --appendix <path>', 'Append path to urls')
+	.option('-p, --parallel <count>', 'Number of urls to test in parallel', parseInt)
+	.option('-r, --repeat <times>', 'Number of times to test repeatly, returns averages', parseInt)
+	.option('-t, --timeout <ms>', 'Timeout for http request', parseInt)
+	.option('-m, --template <str>', 'Replace each url with <str>, %s is the original url')
 	.parse(process.argv);
-
-if (typeof program.parallel === 'string') {
-	program.parallel = +program.parallel;
-}
-if (typeof program.repeat === 'string') {
-	program.repeat = +program.repeat;
-}
-if (typeof program.timeout === 'string') {
-	program.timeout = +program.timeout;
-}
 
 var urls = program.args;
 if (!urls.length) {

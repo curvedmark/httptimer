@@ -11,7 +11,20 @@ test('startOne()', function (done) {
 
 	var start = Date.now();
 	promise.then(function (rtt) {
-		rtt.should.be.within(100, 120);
+		rtt.should.be.within(100, 115);
+		(Date.now() - start).should.be.within(100, 115);
+	}).nodeify(done);
+});
+
+test('startOne(), template', function (done) {
+	var promise = createServer(100).then(function (url) {
+		var template = '%s' + url.slice(1);
+		return httptimer.startOne(url.charAt(0), {template: template});
+	});
+
+	var start = Date.now();
+	promise.then(function (rtt) {
+		rtt.should.be.within(100, 115);
 		(Date.now() - start).should.be.within(100, 115);
 	}).nodeify(done);
 });
