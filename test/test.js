@@ -11,8 +11,8 @@ test('startOne()', function (done) {
 
 	var start = Date.now();
 	promise.then(function (rtt) {
-		rtt.should.be.within(100, 115);
-		(Date.now() - start).should.be.within(100, 115);
+		rtt.should.be.within(100, 125);
+		(Date.now() - start).should.be.within(100, 125);
 	}).nodeify(done);
 });
 
@@ -24,14 +24,14 @@ test('startOne(), template', function (done) {
 
 	var start = Date.now();
 	promise.then(function (rtt) {
-		rtt.should.be.within(100, 115);
-		(Date.now() - start).should.be.within(100, 115);
+		rtt.should.be.within(100, 125);
+		(Date.now() - start).should.be.within(100, 125);
 	}).nodeify(done);
 });
 
 test('startOne(), timeout', function (done) {
-	var promise = createServer(100).then(function (url) {
-		return httptimer.startOne(url, {timeout: 50});
+	var promise = createServer(200).then(function (url) {
+		return httptimer.startOne(url, {timeout: 100});
 	});
 
 	var start = Date.now();
@@ -39,7 +39,7 @@ test('startOne(), timeout', function (done) {
 		throw Error('promise should be rejected');
 	}, function (error) {
 		error.should.be.an.instanceOf(Error);
-		(Date.now() - start).should.be.within(50, 65);
+		(Date.now() - start).should.be.within(100, 125);
 	}).nodeify(done);
 });
 
@@ -50,9 +50,9 @@ test('startAll(), serial', function (done) {
 
 	var start = Date.now();
 	promise.spread(function (rtt1, rtt2) {
-		rtt1.should.be.within(200, 215);
-		rtt2.should.be.within(100, 115);
-		(Date.now() - start).should.be.within(300, 330);
+		rtt1.should.be.within(200, 225);
+		rtt2.should.be.within(100, 125);
+		(Date.now() - start).should.be.within(300, 350);
 	}).nodeify(done);
 });
 
@@ -63,9 +63,9 @@ test('startAll(), parallel', function (done) {
 
 	var start = Date.now();
 	promise.spread(function (rtt1, rtt2) {
-		rtt1.should.be.within(200, 215);
-		rtt2.should.be.within(100, 115);
-		(Date.now() - start).should.be.within(200, 230);
+		rtt1.should.be.within(200, 225);
+		rtt2.should.be.within(100, 125);
+		(Date.now() - start).should.be.within(200, 225);
 	}).nodeify(done);
 });
 
@@ -76,9 +76,9 @@ test('repeat(), repeat twice, serial', function (done) {
 
 	var start = Date.now();
 	promise.spread(function (rtt1, rtt2) {
-		rtt1.should.be.within(200, 215);
-		rtt2.should.be.within(100, 115);
-		(Date.now() - start).should.be.within(600, 630);
+		rtt1.should.be.within(200, 250);
+		rtt2.should.be.within(100, 150);
+		(Date.now() - start).should.be.within(600, 700);
 	}).nodeify(done);
 });
 
@@ -89,9 +89,9 @@ test('repeat(), repeat twice, parallel', function (done) {
 
 	var start = Date.now();
 	promise.spread(function (rtt1, rtt2) {
-		rtt1.should.be.within(200, 215);
-		rtt2.should.be.within(100, 115);
-		(Date.now() - start).should.be.within(400, 430);
+		rtt1.should.be.within(200, 225);
+		rtt2.should.be.within(100, 125);
+		(Date.now() - start).should.be.within(400, 450);
 	}).nodeify(done);
 });
 
