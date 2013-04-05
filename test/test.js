@@ -35,7 +35,9 @@ test('startOne(), timeout', function (done) {
 	});
 
 	var start = Date.now();
-	promise.catch(function (error) {
+	promise.then(function () {
+		throw Error('promise should be rejected');
+	}, function (error) {
 		error.should.be.an.instanceOf(Error);
 		(Date.now() - start).should.be.within(50, 65);
 	}).nodeify(done);
