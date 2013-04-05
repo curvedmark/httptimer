@@ -42,6 +42,13 @@ Q(urls).then(function (urls) {
 	}
 });
 
+// allow httptimer | head
+process.stdout.on('error', function (error) {
+	if (error.code === 'EPIPE') {
+		process.exit();
+	}
+});
+
 function readStdin() {
 	var deferred = Q.defer();
 
