@@ -1,4 +1,4 @@
-# httptimer
+# httptimer [![Build Status](https://travis-ci.org/curvedmark/httptimer.png?branch=master)](https://travis-ci.org/curvedmark/httptimer)
 
 Test server network RTT via http
 
