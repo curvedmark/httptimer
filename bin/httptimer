@@ -13,7 +13,7 @@ program
 	.option('-r, --repeat <times>', 'Number of times to test repeatly, returns averages', parseInt)
 	.option('-t, --timeout <ms>', 'Timeout for http request', parseInt)
 	.option('-m, --template <str>', 'Replace each url with <str>, %s is the original url')
-	.option('-s, --succinct', 'Not output failed urls')
+	.option('-e, --error', 'Display failed urls')
 	.parse(process.argv);
 
 var urls = program.args;
