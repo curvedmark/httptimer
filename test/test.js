@@ -114,7 +114,7 @@ test('start(), sort results', function (done) {
 
 test('start(), sort results with error', function (done) {
 	var promise = createServers(200, 150, 100, 50).then(function (urls) {
-		var done = httptimer.start(urls, {repeat: 1, timeout: 125});
+		var done = httptimer.start(urls, {repeat: 1, timeout: 125, error: true});
 		return done.then(function (entries) {
 			entries.forEach(function (entry) {
 				entry.url = urls.indexOf(entry.url);
